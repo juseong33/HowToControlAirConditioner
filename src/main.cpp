@@ -9,4 +9,5 @@ void setup()
 void loop()
 {
   RecvLoop();     // IR 수신
+  SendNecTest();  // IR 송신 테스트
 }
