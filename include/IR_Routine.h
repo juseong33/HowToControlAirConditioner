@@ -8,9 +8,6 @@
 #define Down 0x7F609F  // Remote Temp down
 #define Mode 0x7F00FF  // Remote Mode change
 
-#define COMMAND_VALUE_MASK 0xFF0000
-#define COMMAND_VALUE_OFFSET 16U
-#define ADDRESS_VALUE_MASK 0xFFFF
 /*
  * 신일 리모컨 분석 코드 결과 *
  * 전원 : 7F20DF
@@ -25,7 +22,6 @@
 const uint16_t SEND_PIN = 13U;
 const uint16_t RECV_PIN = 14U;
 
-extern void init_ir();
-extern void RecvSet();
-extern void RecvLoop();
-extern void SendNecTest();
+void InitIr();
+void RecvLoop();
+void SendNecTest();

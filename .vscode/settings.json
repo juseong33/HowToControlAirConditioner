@@ -9,6 +9,11 @@
     "unordered_set": "cpp",
     "vector": "cpp",
     "initializer_list": "cpp",
-    "irsend.h": "c"
+    "irsend.h": "c",
+    "sstream": "cpp",
+    "typeinfo": "cpp",
+    "memory": "cpp",
+    "fstream": "cpp",
+    "tuple": "cpp"
   }
 }
