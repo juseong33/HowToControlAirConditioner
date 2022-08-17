@@ -11,22 +11,32 @@ void setup()
   {
     Serial.print(".");
     delay(500);
-    if(WiFi.status() == WL_CONNECTED)   Serial.println("WiFi Connected");
+    if (WiFi.status() == WL_CONNECTED)
+      Serial.println("WiFi Connected");
   }
   InitIr();
-  delay(1000);
   SendNecTest();
+  delay(1000);
 }
 
-void loop()
+void loop() 
 {
   now = millis();
   RecvLoop();
-  if (diff(now, last, 3000))
+  if (diff(now, last, 10000))
   {
     last = now;
-    int* glb_time_int_array = GetTimeForUserset();
-    Serial.println("---------------------------------------");   
+    int *glb_time_int_array = GetTimeForUserset();
+    Serial.println("---------------------------------------");
     Serial.printf("%d시 : %d분 : %d초 \n", glb_time_int_array[0], glb_time_int_array[1], glb_time_int_array[2]);
+
+    if((glb_time_int_array[0] >= 9) && (glb_time_int_array[0] < 19))
+    {
+      DayTimeRoutine();
+    }
+    else if((glb_time_int_array[0] >= 19) || ((glb_time_int_array[0] >= 0) && (glb_time_int_array[0] < 9)))
+    {
+      EveningRoutine();
+    }
   }
-}
+} 

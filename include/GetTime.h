@@ -15,3 +15,4 @@ const char TIME_ZONE = 9;
 boolean diff(unsigned long now, unsigned long prev, unsigned long d);
 void UpdateLocalTime();
 int* GetTimeForUserset();
+int MinToMils(uint8_t Min);

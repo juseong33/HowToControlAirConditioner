@@ -38,3 +38,9 @@ int* GetTimeForUserset()
 
   return timert;
 }
+
+int MinToMils(uint8_t Min)
+{
+  Min *= 60000;
+  return Min;
+}

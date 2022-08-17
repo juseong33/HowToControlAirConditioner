@@ -10,10 +10,13 @@
 extern void InitIr();
 extern void RecvLoop();
 extern void SendNecTest();
+extern void DayTimeRoutine();
+extern void EveningRoutine();
 
 // GetTime.cpp
 extern boolean diff(unsigned long now, unsigned long prev, unsigned long d);
 extern void UpdateLocalTime();
 extern int* GetTimeForUserset();
+extern int MinToMils(uint8_t Min);
 
 extern unsigned long long now;
