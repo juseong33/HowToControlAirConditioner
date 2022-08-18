@@ -5,8 +5,8 @@
 
 #define MAX 0xFFFFFFFF
 
-struct tm *glb_ptm;
-struct timeval glb_curTime;
+tm *glb_ptm;
+timeval glb_curTime;
 time_t glb_rawtime;
 
 const char NTP_SERVER[] = "pool.ntp.org";
