@@ -8,11 +8,12 @@
 #define IrDown 0x7F609F  // Remote Temp down
 #define IrMode 0x7F00FF  // Remote Mode change
 
-typedef struct _AcCommands {  
-  bool Onoff;     // True : 에어컨의 전원 On, False : 에어컨의 전원 Off
-  bool Init;      // True : 함수의 첫 If문,   False : 함수의 첫 If문이 아님
-  bool Sunrise;   // True : DayTime,          False : Evening
-  char Mode[20];  // 현재모드 문자열 저장
+typedef struct _AcCommands
+{
+  bool Onoff;    // True : 에어컨의 전원 On, False : 에어컨의 전원 Off
+  bool Init;     // True : 함수의 첫 If문,   False : 함수의 첫 If문이 아님
+  bool Sunrise;  // True : DayTime,          False : Evening
+  char Mode[20]; // 현재모드 문자열 저장
 } AcCommands;
 /*
  * 신일 리모컨 분석 코드 결과 *
@@ -33,3 +34,4 @@ void SendNecTest();
 void DayTimeRoutine();
 void EveningRoutine();
 void CheckMode();
+void WaterDetect();

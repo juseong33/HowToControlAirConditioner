@@ -2,6 +2,7 @@
 
 unsigned long long last = 0;
 unsigned long long now;
+uint16_t WaterSensorVal;
 
 void setup()
 {
@@ -11,23 +12,25 @@ void setup()
   {
     Serial.print(".");
     delay(500);
-    if (WiFi.status() == WL_CONNECTED)
-      Serial.println("WiFi Connected");
+    if (WiFi.status() == WL_CONNECTED)  Serial.println("WiFi Connected"); 
   }
   InitIr();
   SendNecTest();
   delay(1000);
 }
 
-void loop() 
+void loop()
 {
   now = millis();
   RecvLoop();
-  if (diff(now, last, 10000))
+  WaterDetect();
+  if (diff(now, last, 10000) && (WaterSensorVal == 0))
   {
     last = now;
     int *glb_time_int_array = GetTimeForUserset();
-    Serial.printf("%d시 : %d분 : %d초 \n", glb_time_int_array[0], glb_time_int_array[1], glb_time_int_array[2]);
+    WaterSensorVal = analogRead(33U);
+    Serial.printf("%d시 : %d분 : %d초\n", glb_time_int_array[0], glb_time_int_array[1], glb_time_int_array[2]);
+    Serial.printf("Water Sensor : %d\n", WaterSensorVal);
     /*   테스트를 위해 잠시 주석 처리
     if((glb_time_int_array[0] >= 9) && (glb_time_int_array[0] < 19))
     {
@@ -39,14 +42,14 @@ void loop()
       EveningRoutine();
     }
     */
-   if((glb_time_int_array[2] >= 0) && (glb_time_int_array[2] <= 30))
-   {
-    DayTimeRoutine();
-   }
-   else
-   {
-    CheckMode();
-    EveningRoutine();
-   }
+    if ((glb_time_int_array[2] >= 0) && (glb_time_int_array[2] <= 30))
+    {
+      DayTimeRoutine();
+    }
+    else
+    {
+      CheckMode();
+      EveningRoutine();
+    }
   }
-} 
+}

@@ -7,7 +7,7 @@ boolean diff(unsigned long now, unsigned long prev, unsigned long d)
   {
     return ((now - prev) >= d);
   }
-  else 
+  else
   {
     return (((MAX - prev) + now + 1) >= d);
   }
@@ -19,7 +19,7 @@ void UpdateLocalTime()
   gettimeofday(&glb_curTime, NULL);
 }
 
-int* GetTimeForUserset()
+int *GetTimeForUserset()
 {
   UpdateLocalTime();
   time(&glb_rawtime);
@@ -29,12 +29,12 @@ int* GetTimeForUserset()
   int mm = 0;
   int ss = 0;
   hh = glb_ptm->tm_hour;
-  mm = glb_ptm->tm_min;  
-  ss = glb_ptm->tm_sec;  
+  mm = glb_ptm->tm_min;
+  ss = glb_ptm->tm_sec;
 
   int time[3] = {hh, mm, ss};
-  int *timert = (int *)malloc(sizeof(int)*3);
-  memcpy(timert, time, sizeof(int)*3);
+  int *timert = (int *)malloc(sizeof(int) * 3);
+  memcpy(timert, time, sizeof(int) * 3);
 
   return timert;
 }
