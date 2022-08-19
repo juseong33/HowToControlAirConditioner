@@ -13,6 +13,7 @@ typedef struct _AcCommands
   bool Onoff;    // True : 에어컨의 전원 On, False : 에어컨의 전원 Off
   bool Init;     // True : 함수의 첫 If문,   False : 함수의 첫 If문이 아님
   bool Sunrise;  // True : DayTime,          False : Evening
+  bool Water;    // True : 물 감지,          False : 물 감지되지 않음
   char Mode[20]; // 현재모드 문자열 저장
 } AcCommands;
 /*

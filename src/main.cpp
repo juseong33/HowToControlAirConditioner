@@ -28,7 +28,6 @@ void loop()
   {
     last = now;
     int *glb_time_int_array = GetTimeForUserset();
-    WaterSensorVal = analogRead(33U);
     Serial.printf("%d시 : %d분 : %d초\n", glb_time_int_array[0], glb_time_int_array[1], glb_time_int_array[2]);
     Serial.printf("Water Sensor : %d\n", WaterSensorVal);
     /*   테스트를 위해 잠시 주석 처리
