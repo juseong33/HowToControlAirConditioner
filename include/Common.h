@@ -4,9 +4,6 @@
 #include "WiFi.h"
 #include <string.h>
 
-#define ssid "office1"
-#define password "qwer1234!@#$"
-
 // IR_Routine.cpp
 extern void InitIr();
 extern void RecvLoop();
@@ -22,5 +19,9 @@ extern void UpdateLocalTime();
 extern int *GetTimeForUserset();
 extern int MinToMils(uint8_t Min);
 
-extern unsigned long long now;
+// Wifis.h
+extern void send_event(const char *event);
+extern void Wifi_Init();
+
+extern unsigned long now;
 extern uint16_t WaterSensorVal;

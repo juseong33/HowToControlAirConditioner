@@ -1,6 +1,6 @@
 #include "IR_Routine.h"
 
-unsigned long long past = 0;
+unsigned long past = 0;
 AcCommands CheckAc;
 
 void InitIr()
@@ -38,7 +38,7 @@ void DayTimeRoutine()
   CheckAc.Water = false;
   CheckAc.Sunrise = true;
   // 전원 가동 후 17분이 지나면 송풍모드 == 17분 동안 냉방모드
-  if ((diff(now, past, 10000 /*MinToMils(17)*/)) && (CheckAc.Onoff == true) && (CheckAc.Init == true) && (CheckAc.Sunrise == true))
+  if ((now - past >= 1020000) && (CheckAc.Onoff == true) && (CheckAc.Init == true) && (CheckAc.Sunrise == true))
   {
     past = now;
     CheckAc.Init = false;
@@ -47,7 +47,7 @@ void DayTimeRoutine()
     IrSender.sendNECRaw(IrMode, 2);
   }
   // 송풍 모드 17분 가동 후 전원 OFF
-  if ((diff(now, past, 10000 /*MinToMils(17)*/)) && (CheckAc.Onoff == true) && (CheckAc.Init == false) && (CheckAc.Sunrise == true))
+  if ((now - past >= 1020000) && (CheckAc.Onoff == true) && (CheckAc.Init == false) && (CheckAc.Sunrise == true))
   {
     past = now;
     CheckAc.Onoff = false;
@@ -56,7 +56,7 @@ void DayTimeRoutine()
     IrSender.sendNECRaw(IrPower, 0);
   }
   // 전원이 꺼진 25분 후 전원을 킨 뒤, 냉방모드로 전환
-  if ((diff(now, past, 10000 /*MinToMils(25)*/)) && (CheckAc.Onoff == false) && (CheckAc.Init == false) && (CheckAc.Sunrise == true))
+  if ((now - past >= 1500000) && (CheckAc.Onoff == false) && (CheckAc.Init == false) && (CheckAc.Sunrise == true))
   {
     past = now;
     CheckAc.Onoff = true;
@@ -97,8 +97,8 @@ void EveningRoutine()
 {
   CheckAc.Water = false;
   // 송풍모드로 넘어왔을 시 20분 뒤 전원을 끔, DayTime루틴의 3번째 if문으로 이동
-  if ((diff(now, past, 10000 /*MinToMils(20)*/)) && (strcmp(CheckAc.Mode, "송풍모드") == 0) && (CheckAc.Sunrise == false))
-  {
+  if ((now - past >= 1200000) && (strcmp(CheckAc.Mode, "송풍모드") == 0) && (CheckAc.Sunrise == false))
+  { 
     past = now;
     CheckAc.Onoff = false;
     strcpy(CheckAc.Mode, "전원Off");
@@ -106,7 +106,7 @@ void EveningRoutine()
     IrSender.sendNECRaw(IrPower, 0);
   }
   // 전원 Off로 넘어왔을 시 20분뒤 전원을 킴, DayTime루틴의 2번째 if문으로 이동
-  if ((diff(now, past, 10000 /*MinToMils(20)*/)) && (strcmp(CheckAc.Mode, "전원Off") == 0) && (CheckAc.Sunrise == false))
+  if ((now - past >= 1200000) && (strcmp(CheckAc.Mode, "전원Off") == 0) && (CheckAc.Sunrise == false))
   {
     past = now;
     CheckAc.Onoff = true;
@@ -120,13 +120,12 @@ void EveningRoutine()
 // 수위센서가 감지되었을 때 동작
 void WaterDetect()
 {
-  // 10초에 한번씩 센서값을 읽어서 전달
-  if ((diff(now, past, 10000))) WaterSensorVal = analogRead(33U);
   // 전원이 꺼져있는 상태에서 감지
   if ((WaterSensorVal != 0) && (strcmp(CheckAc.Mode, "전원Off") == 0) && (CheckAc.Water == false))
   {
     CheckAc.Water = true;
     Serial.printf("수위센서가 감지되어 %s후 루틴을 보류합니다.\n", CheckAc.Mode);
+    send_event("Water_Detect");
   }
   // 전원이 켜져있는 상태에서 감지
   if ((WaterSensorVal != 0) && (strcmp(CheckAc.Mode, "전원Off") != 0) && (CheckAc.Water == false))
@@ -136,5 +135,6 @@ void WaterDetect()
     strcpy(CheckAc.Mode, "전원Off");
     Serial.printf("수위센서가 감지되어 %s후 루틴을 보류합니다.\n", CheckAc.Mode);
     IrSender.sendNECRaw(IrPower, 0);
+    send_event("Water_Detect");
   }
 }
