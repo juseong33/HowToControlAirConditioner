@@ -30,7 +30,13 @@ void RecvLoop()
 void SendNecTest()
 {
   Serial.println("Test For Successful NEC Reception");
-  IrSender.sendNECRaw(IrMode, 4);
+  IrSender.sendNECRaw(IrMode, 0);
+  delay(2000);
+  IrSender.sendNECRaw(IrMode, 0);
+  delay(2000);
+  IrSender.sendNECRaw(IrMode, 0);
+  delay(2000);
+  IrSender.sendNECRaw(IrMode, 0);
 }
 
 // 오전 9시 ~ 오후 7시까지의 루틴
@@ -38,16 +44,18 @@ void DayTimeRoutine()
 {
   CheckAc.Sunrise = true;
   // 전원 가동 후 17분이 지나면 송풍모드 == 17분 동안 냉방모드
-  if ((now - past >= 1020000) && (CheckAc.Onoff == true) && (CheckAc.Init == true) && (CheckAc.Sunrise == true))
+  if ((now - past >= 1050000) && (CheckAc.Onoff == true) && (CheckAc.Init == true) && (CheckAc.Sunrise == true))
   {
     past = now;
     CheckAc.Init = false;
     strcpy(CheckAc.Mode, "송풍모드");
     Serial.println(CheckAc.Mode);
-    IrSender.sendNECRaw(IrMode, 2);
+    IrSender.sendNECRaw(IrMode, 0);
+    delay(2000);
+    IrSender.sendNECRaw(IrMode, 0);
   }
   // 송풍 모드 17분 가동 후 전원 OFF
-  if ((now - past >= 1020000) && (CheckAc.Onoff == true) && (CheckAc.Init == false) && (CheckAc.Sunrise == true))
+  if ((now - past >= 1050000) && (CheckAc.Onoff == true) && (CheckAc.Init == false) && (CheckAc.Sunrise == true))
   {
     past = now;
     CheckAc.Onoff = false;
@@ -64,8 +72,10 @@ void DayTimeRoutine()
     strcpy(CheckAc.Mode, "냉방모드");
     Serial.println(CheckAc.Mode);
     IrSender.sendNECRaw(IrPower, 0);
+    delay(3000);
+    IrSender.sendNECRaw(IrMode, 0);
     delay(2000);
-    IrSender.sendNECRaw(IrMode, 2);
+    IrSender.sendNECRaw(IrMode, 0);
   }
 }
 
@@ -85,7 +95,9 @@ void CheckMode()
     else if ((strcmp(CheckAc.Mode, "냉방모드") == 0) && (CheckAc.Onoff == true))
     {
       Serial.println("Mode Changed, Go To EveningRoutine");
-      IrSender.sendNECRaw(IrMode, 2);
+      IrSender.sendNECRaw(IrMode, 0);
+      delay(2000);
+      IrSender.sendNECRaw(IrMode, 0);
       strcpy(CheckAc.Mode, "송풍모드");
       CheckAc.Sunrise = false;
     }

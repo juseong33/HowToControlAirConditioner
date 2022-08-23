@@ -3,10 +3,10 @@
 #include "Common.h"
 #include "IRremote.h"
 
-#define IrPower 0x7F20DF // Remote Power On/Off
-#define IrUp 0x7FA05F    // Remote Temp up
-#define IrDown 0x7F609F  // Remote Temp down
-#define IrMode 0x7F00FF  // Remote Mode change
+#define IrPower 0xFB04FE00 // Remote Power On/Off
+#define IrUp    0xFA05FE00    // Remote Temp up
+#define IrDown  0xF906FE00  // Remote Temp down
+#define IrMode  0xFF00FE00  // Remote Mode change
 
 typedef struct _AcCommands
 {
@@ -18,16 +18,16 @@ typedef struct _AcCommands
 } AcCommands;
 /*
  * 신일 리모컨 분석 코드 결과 *
- * 전원 : 7F20DF
- * + : 7FA05F
- * - : 7F609F
- * 바람세기 : 7FE01F
- * 시간조절 : 7F807F
- * 수면 : 7FC03F
- * 모드 : 7F00FF
+ * 전원 : FB04FE00
+ * + : FA05FE00
+ * - : F906FE00
+ * 바람세기 : F807FE00
+ * 시간조절 : FE01FE00
+ * 수면 : FC03FE00
+ * 모드 : FF00FE00 
  */
-const uint16_t SEND_PIN = 13U;
-const uint16_t RECV_PIN = 14U;
+const uint16_t SEND_PIN = 14U;
+const uint16_t RECV_PIN = 13U;
 
 void InitIr();
 void RecvLoop();

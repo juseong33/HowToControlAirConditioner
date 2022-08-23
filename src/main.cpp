@@ -16,14 +16,14 @@ void setup()
 void loop()
 {
   now = millis();
-  RecvLoop();
+  //RecvLoop();
   WaterDetect();
   BackToRoutine();
   if (diff(now, last, 60000))
   {
     last = now;
     WaterSensorVal = analogRead(33U);
-    if(WaterSensorVal <= 700) WaterSensorVal = 0;
+    if(WaterSensorVal <= 1000) WaterSensorVal = 0;
     int *glb_time_int_array = GetTimeForUserset();
     Serial.printf("%d시 : %d분 : %d초\n", glb_time_int_array[0], glb_time_int_array[1], glb_time_int_array[2]);
     Serial.printf("Water Sensor : %d\n", WaterSensorVal);
