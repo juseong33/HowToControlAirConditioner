@@ -12,6 +12,7 @@ extern void DayTimeRoutine();
 extern void EveningRoutine();
 extern void CheckMode();
 extern void WaterDetect();
+extern void BackToRoutine();
 
 // GetTime.cpp
 extern boolean diff(unsigned long now, unsigned long prev, unsigned long d);
