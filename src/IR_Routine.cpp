@@ -2,6 +2,7 @@
 
 unsigned long past = 0;
 AcCommands CheckAc;
+int IfLoop = 1;
 
 void InitIr()
 {
@@ -38,46 +39,106 @@ void SendNecTest()
   delay(2000);
   IrSender.sendNECRaw(IrMode, 0);
 }
-
-// 오전 9시 ~ 오후 7시까지의 루틴
-void DayTimeRoutine()
+void DayTimeRoutine() // 2022-10-05 Changed
 {
-  CheckAc.Sunrise = true;
-  // 전원 가동 후 17분이 지나면 송풍모드 == 17분 동안 냉방모드
-  if ((now - past >= 1050000) && (CheckAc.Onoff == true) && (CheckAc.Init == true) && (CheckAc.Sunrise == true))
+  // 전원 가동 후(냉방모드) 15분이 지나면 10분 쉼
+  if ((now - past >= 900000) && (IfLoop == 1))
   {
     past = now;
-    CheckAc.Init = false;
+    ++IfLoop;
+    strcpy(CheckAc.Mode, "전원Off");
+    Serial.println(CheckAc.Mode);
+    IrSender.sendNECRaw(IrPower, 0);
+  }
+  // 전원 Off 후 10분이 지나면 송풍모드
+  if ((now - past >= 600000) && (IfLoop == 2))
+  {
+    past = now;
+    ++IfLoop;
+    strcpy(CheckAc.Mode, "송풍모드");
+    Serial.println(CheckAc.Mode);
+    IrSender.sendNECRaw(IrPower, 0);
+    delay(2000);
+    IrSender.sendNECRaw(IrMode, 0);
+    delay(2000);
+    IrSender.sendNECRaw(IrMode, 0);
+  }
+  // 송풍 모드 후 10분이 지나면 Auto모드
+  if ((now - past >= 600000) && (IfLoop == 3))
+  {
+    past = now;
+    ++IfLoop;
+    strcpy(CheckAc.Mode, "Auto모드");
+    Serial.println(CheckAc.Mode);
+    IrSender.sendNECRaw(IrMode, 0);
+  }
+  // Auto모드 후 15분이 지나면 쉼
+  if ((now - past >= 900000) && (IfLoop == 4))
+  {
+    past = now;
+    ++IfLoop;
+    strcpy(CheckAc.Mode, "전원Off");
+    Serial.println(CheckAc.Mode);
+    IrSender.sendNECRaw(IrPower, 0);
+  }
+  // 전원 Off 후 10분이 지나면 냉방모드
+  if ((now - past >= 600000) && (IfLoop == 5))
+  {
+    past = now;
+    IfLoop = 1;
+    strcpy(CheckAc.Mode, "냉방모드");
+    Serial.println(CheckAc.Mode);
+    IrSender.sendNECRaw(IrPower, 0);
+    delay(2000);
+    IrSender.sendNECRaw(IrMode, 0);
+  }
+}
+
+/*
+void DayTimeRoutine()
+{
+  // 전원 가동 후 20분이 지나면 송풍모드 == 20분동안 냉방모드
+  if ((now - past >= 1200000) && (IfLoop == 1))
+  {
+    past = now;
+    ++IfLoop;
     strcpy(CheckAc.Mode, "송풍모드");
     Serial.println(CheckAc.Mode);
     IrSender.sendNECRaw(IrMode, 0);
     delay(2000);
     IrSender.sendNECRaw(IrMode, 0);
   }
-  // 송풍 모드 17분 가동 후 전원 OFF
-  if ((now - past >= 1050000) && (CheckAc.Onoff == true) && (CheckAc.Init == false) && (CheckAc.Sunrise == true))
+  // 송풍모드 가동 후 20분이 지나면 Auto모드 == 20분동안 송풍모드
+  if ((now - past >= 1200000) && (IfLoop == 2))
   {
     past = now;
-    CheckAc.Onoff = false;
+    ++IfLoop;
+    strcpy(CheckAc.Mode, "Auto모드");
+    Serial.println(CheckAc.Mode);
+    IrSender.sendNECRaw(IrMode, 0);
+  }
+  // Auto모드 가동 후 10분이 지나면 전원 Off = 10분동안 Auto모드
+  if ((now - past >= 600000) && (IfLoop == 3))
+  {
+    past = now;
+    ++IfLoop;
     strcpy(CheckAc.Mode, "전원Off");
     Serial.println(CheckAc.Mode);
     IrSender.sendNECRaw(IrPower, 0);
   }
-  // 전원이 꺼진 25분 후 전원을 킨 뒤, 냉방모드로 전환
-  if ((now - past >= 1500000) && (CheckAc.Onoff == false) && (CheckAc.Init == false) && (CheckAc.Sunrise == true))
+  // 전원 Off 후 10분이 지나면 냉방모드 전원 On = 10분동안 전원 Off
+  if ((now - past >= 600000) && (IfLoop == 4))
   {
     past = now;
-    CheckAc.Onoff = true;
-    CheckAc.Init = true;
+    IfLoop = 1;
     strcpy(CheckAc.Mode, "냉방모드");
     Serial.println(CheckAc.Mode);
     IrSender.sendNECRaw(IrPower, 0);
-    delay(3000);
-    IrSender.sendNECRaw(IrMode, 0);
     delay(2000);
     IrSender.sendNECRaw(IrMode, 0);
   }
 }
+*/
 
 // Evening 루틴으로 넘어가기 전 현재모드 체크
 void CheckMode()
@@ -152,7 +213,7 @@ void WaterDetect()
 
 void BackToRoutine()
 {
-  if (WaterSensorVal == 0 && CheckAc.Water == true) 
+  if (WaterSensorVal == 0 && CheckAc.Water == true)
   {
     CheckAc.Water = false;
     CheckAc.Onoff = true;
